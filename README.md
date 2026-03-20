@@ -7,69 +7,92 @@ An intuitive web app for boarding house owners to efficiently log, track, and ma
 - 📋 Track boarders with entry/exit dates, payment status, and notes
 - 💰 Monitor payments — paid, unpaid, partial
 - 🧾 Log expenses (bills, receipts, etc.)
-- 📊 Monthly summaries and overviews
+- 📊 Monthly dashboard summary
 - 🕒 Activity log — full audit trail of all changes
+- 🗄️ Local SQLite database — no internet required, data stays on your machine
 
-## Entity Structure
+## Tech Stack
 
-### Boarder
-| Field | Type | Description |
-|-------|------|-------------|
-| name | string | Boarder's name |
-| entry_date | string | Date they checked in |
-| time_in | string | Time in |
-| time_out | string | Time out |
-| time_out_date | string | Date they checked out |
-| status | string | paid / unpaid / partial |
-| amount | number | Total amount due |
-| amount_paid | number | Amount already paid |
-| month_year | string | Billing month (e.g. 2026-03) |
-| notes | string | Additional notes |
-
-### Settings
-| Field | Type | Description |
-|-------|------|-------------|
-| monthly_rate | number | Default monthly rate |
-| currency | string | Currency symbol |
-| summary_overrides | object | Custom summary config |
-
-### Expense
-| Field | Type | Description |
-|-------|------|-------------|
-| bill_name | string | Name of the bill/expense |
-| date | string | Date of expense |
-| amount | number | Expense amount |
-| receipt_url | string | URL to receipt image |
-| notes | string | Additional notes |
-| month_year | string | Billing month |
-
-### ActivityLog
-| Field | Type | Description |
-|-------|------|-------------|
-| action | string | Action performed |
-| entity_type | string | Which entity was affected |
-| entity_id | string | ID of affected record |
-| entity_name | string | Name of affected record |
-| user_email | string | Who performed the action |
-| amount | number | Amount involved |
-| old_values | object | Previous values |
-| new_values | object | New values |
-| changes_summary | string | Human-readable summary |
+- **Frontend:** React 18 + Tailwind CSS
+- **Backend:** Node.js + Express
+- **Database:** SQLite (via better-sqlite3) — stored locally as `server/boardertrack.db`
 
 ## Getting Started
 
+### Requirements
+- Node.js v16+ installed ([download here](https://nodejs.org))
+
+### 1. Clone the repo
 ```bash
-npm install
-npm start
+git clone https://github.com/hannadry10-afk/boardertrack.git
+cd boardertrack
 ```
 
-## Built With
+### 2. Install frontend dependencies
+```bash
+npm install
+```
 
-- React 18
-- React Router v6
-- Lucide React (icons)
-- Base44 Platform
+### 3. Install backend dependencies
+```bash
+cd server
+npm install
+cd ..
+```
+
+### 4. Start the backend server
+Open a terminal and run:
+```bash
+cd server
+node index.js
+```
+You should see: `🚀 BoarderTrack server running at http://localhost:5000`
+
+### 5. Start the frontend (in a new terminal)
+```bash
+npm start
+```
+App opens at: **http://localhost:3000**
+
+## Project Structure
+
+```
+boardertrack/
+├── public/
+│   └── index.html
+├── src/
+│   ├── api/
+│   │   └── entities.js       # API calls to backend
+│   ├── pages/
+│   │   ├── Dashboard.jsx
+│   │   ├── Boarders.jsx
+│   │   ├── Expenses.jsx
+│   │   ├── ActivityLog.jsx
+│   │   └── Settings.jsx
+│   ├── App.jsx
+│   ├── index.js
+│   └── index.css
+├── server/
+│   ├── index.js              # Express API server
+│   ├── db.js                 # SQLite database setup
+│   ├── boardertrack.db       # Your local database (auto-created)
+│   └── package.json
+└── package.json
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/entities/boarders` | List all boarders |
+| POST | `/api/entities/boarders` | Add a boarder |
+| PUT | `/api/entities/boarders/:id` | Update a boarder |
+| DELETE | `/api/entities/boarders/:id` | Delete a boarder |
+| GET | `/api/entities/expenses` | List all expenses |
+| GET | `/api/health` | Server health check |
+
+Same pattern applies for `expenses`, `settings`, `activity_log`.
 
 ## License
 
-MIT
+MIT — free to use, modify, and share.
